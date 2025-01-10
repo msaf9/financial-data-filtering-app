@@ -54,7 +54,7 @@ npm install
 3. Add your Financial Modeling Prep API key:
 >   - Create a .env file in the root directory.
 >	- Add your API key to the file: 
->       - REACT_APP_API_KEY=your_api_key_here
+>       - ```REACT_APP_API_KEY=your_api_key_here```
 
 4.	Start the development server:
 ```npm
@@ -70,7 +70,7 @@ This project is deployed using GitHub Pages. To access the live version of the a
 URL: https://msaf9.github.io/financial-data-filtering-app/
 
 ## File Structure
-```
+```tree
 financial-data-filtering-app/
 ├── public/
 ├── src/
