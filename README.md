@@ -1,70 +1,108 @@
-# Getting Started with Create React App
+# Financial Data Filtering App
+A web application to fetch and analyze financial data for Apple Inc. (AAPL) using data from a public API. The app provides features like filtering, sorting, and displaying financial metrics in a responsive, user-friendly interface.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Features
+1. Fetch and Display Data
+    - Retrieves annual income statement data for Apple Inc. using the Financial Modeling Prep API.
+    - Displays key financial metrics in a tabular format, including:
+    - Date: The fiscal year of the data.
+    - Revenue
+    - Net Income
+    - Gross Profit
+    - EPS (Earnings Per Share)
+    - Operating Income
 
-## Available Scripts
+2. Filtering
+    - Filter financial data based on:
+    - Date Range: Specify start and end years.
+    - Revenue: Filter by a user-defined revenue range.
+    - Net Income: Filter by a user-defined net income range.
 
-In the project directory, you can run:
+3. Sorting
+    - Sort table data by:
+    - Date: Ascending/Descending order.
+    - Revenue: Ascending/Descending order.
+    - Net Income: Ascending/Descending order.
 
-### `npm start`
+4. Responsive Design
+    - Ensures a seamless user experience on desktop, tablet, and mobile devices.
+    - Styled using TailwindCSS for a clean and modern look.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Technical Stack
+- Frontend: React.js
+- Styling: TailwindCSS
+- API: [Financial Modeling Prep API](https://site.financialmodelingprep.com/developer/docs#income-statements-financial-statements)
+- Deployment: GitHub Pages
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Installation and Setup
 
-### `npm test`
+### Prerequisites
+- Node.js installed on your system.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Steps to Run Locally
+1. Clone the repository:
+```git
+git clone https://github.com/msaf9/financial-data-filtering-app.git
+cd financial-data-filtering-app
+```
 
-### `npm run build`
+2.	Install dependencies:
+```npm
+npm install
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+3. Add your Financial Modeling Prep API key:
+>   - Create a .env file in the root directory.
+>	- Add your API key to the file: 
+>       - REACT_APP_API_KEY=your_api_key_here
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+4.	Start the development server:
+```npm
+npm start
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+5.	Open the app in your browser at http://localhost:3000.
 
-### `npm run eject`
+## Deployment
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+This project is deployed using GitHub Pages. To access the live version of the app, visit: [Financial Data Filtering App](https://msaf9.github.io/financial-data-filtering-app/).
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+URL: https://msaf9.github.io/financial-data-filtering-app/
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## File Structure
+```
+financial-data-filtering-app/
+├── public/
+├── src/
+│   ├── App.js            # Main application logic
+│   ├── index.js          # React entry point
+│── .env                  # API key configuration
+├── .gitignore
+├── package.json
+├── README.md
+└── tailwind.config.js    # TailwindCSS configuration
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-## Learn More
+## Contributing
+1.	Fork the repository.
+2.	Create a feature branch:
+```git
+git checkout -b feature-name
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+3.	Commit your changes:
+```git
+git commit -m "Add feature-name"
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+4.	Push to your forked repository:
+```git
+git push origin feature-name
+```
 
-### Code Splitting
+5.	Submit a pull request.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Contact
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+For any questions or suggestions, feel free to reach out to me by opening a pull request.
