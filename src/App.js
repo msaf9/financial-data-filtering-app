@@ -26,13 +26,12 @@ function App() {
     minNetIncome: '',
     maxNetIncome: ''
   });
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [sortConfig, setSortConfig] = useState({ key: '', direction: '' });
   const [filterOptions, setFilterOptions] = useState({
     years: [],
     revenues: [],
     netIncomes: []
   });
+  const [sortConfig, setSortConfig] = useState({ key: '', direction: '' });
 
   // Function to fetch data from the API
   const fetchAAPL = async (url) => {
@@ -108,8 +107,11 @@ function App() {
 
     // Update the filtered data and close the modal
     setFilteredData(filtered);
-    setIsModalOpen(false);
   };
+
+  useEffect(() => {
+    applyFilters();
+  }, [filters]);
 
   // Function to reset filters to their default values
   const resetFilters = () => {
@@ -122,7 +124,6 @@ function App() {
       maxNetIncome: ''
     });
     setFilteredData(data);
-    setIsModalOpen(false);
   };
 
   /**
@@ -137,19 +138,17 @@ function App() {
       direction = 'descending';
     }
     setSortConfig({ key, direction });
-
-    const sortedData = [...filteredData].sort((value1, value2) => {
-      if (value1[key] < value2[key]) {
-        return direction === 'ascending' ? -1 : 1;
-      }
-      if (value1[key] > value2[key]) {
-        return direction === 'ascending' ? 1 : -1;
-      }
-      return 0;
-    });
-
-    setFilteredData(sortedData);
   };
+
+  const sortedData = [...filteredData].sort((a, b) => {
+    if (a[sortConfig.key] < b[sortConfig.key]) {
+      return sortConfig.direction === 'ascending' ? -1 : 1;
+    }
+    if (a[sortConfig.key] > b[sortConfig.key]) {
+      return sortConfig.direction === 'ascending' ? 1 : -1;
+    }
+    return 0;
+  });
 
   /**
    * Returns the appropriate sort arrow based on the current sort configuration.
@@ -161,171 +160,169 @@ function App() {
     if (sortConfig.key === key) {
       return sortConfig.direction === 'ascending' ? '↑' : '↓';
     }
-    return '↕';
+    return '';
   };
 
   return (
-    <div className="relative overflow-x-auto p-4">
-      {/* Application Title */}
-      <h1 className="text-2xl font-bold mb-4 text-center">Financial Data Filtering App</h1>
-
-      {/* Filter and Reset Buttons */}
-      <div className="flex justify-end mb-4">
-        <button
-          onClick={() => setIsModalOpen(true)} // Opens the filter modal
-          className="p-2 bg-blue-500 text-white rounded hover:bg-blue-600 mr-2"
-        >
-          Filter
-        </button>
-        <button
-          onClick={resetFilters} // Resets applied filters
-          className="p-2 bg-red-500 text-white rounded hover:bg-red-600"
-        >
-          Reset Filters
-        </button>
-      </div>
-
-      {/* Filter Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded shadow-lg w-full max-w-3xl mx-4">
-            {/* Modal Header */}
-            <h2 className="text-xl font-bold mb-4 text-center">Filters</h2>
-
-            {/* Filter Dropdowns */}
-            <div className="filters grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-              {/* Start Date Filter */}
-              <select
-                name="startDate"
-                value={filters.startDate}
-                onChange={handleFilterChange} // Updates the startDate filter
-                className="p-2 border border-gray-300 rounded"
-              >
-                <option value="">Start Year</option>
-                {filterOptions.years.map(year => (
-                  <option key={year} value={year}>{year}</option>
-                ))}
-              </select>
-
-              {/* End Date Filter */}
-              <select
-                name="endDate"
-                value={filters.endDate}
-                onChange={handleFilterChange} // Updates the endDate filter
-                className="p-2 border border-gray-300 rounded"
-              >
-                <option value="">End Year</option>
-                {filterOptions.years.map(year => (
-                  <option key={year} value={year}>{year}</option>
-                ))}
-              </select>
-
-              {/* Minimum Revenue Filter */}
-              <select
+    <div className="flex">
+      <div className="w-1/4 p-4 bg-white-100">
+        {/* Filter and Reset Buttons */}
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold flex items-center">
+            Filters
+          </h2>
+          <button
+            onClick={resetFilters} // Resets applied filters
+            className="p-2 bg-white-500 text-gray rounded hover:text-black"
+          >
+            Reset
+          </button>
+        </div>
+        <div className="filters grid grid-cols-1 gap-4 mb-4">
+          <div className="flex justify-between">
+            <select
+              name="startDate"
+              value={filters.startDate}
+              onChange={handleFilterChange} // Updates the startDate filter
+              className="p-2 border border-gray-200 rounded w-1/3"
+            >
+              <option value="">Start Year</option>
+              {filterOptions.years.map(year => (
+                <option key={year} value={year}>{year}</option>
+              ))}
+            </select>
+            {/* End Date Filter */}
+            <select
+              name="endDate"
+              value={filters.endDate}
+              onChange={handleFilterChange} // Updates the endDate filter
+              className="p-2 border border-gray-200 rounded w-1/3"
+            >
+              <option value="">End Year</option>
+              {filterOptions.years.map(year => (
+                <option key={year} value={year}>{year}</option>
+              ))}
+            </select>
+          </div>
+          {/* Minimum Revenue Filter */}
+          <div>
+            <label
+              htmlFor="minRevenue"
+              className="block text-l font-medium text-gray-700 mb-1"
+            >
+              Revenue
+            </label>
+            <div className="flex justify-between">
+              <input
+                type="number"
                 name="minRevenue"
-                value={filters.minRevenue}
                 onChange={handleFilterChange} // Updates the minRevenue filter
-                className="p-2 border border-gray-300 rounded"
-              >
-                <option value="">Min Revenue</option>
-                {filterOptions.revenues.map(revenue => (
-                  <option key={revenue} value={revenue}>{revenue}</option>
-                ))}
-              </select>
-
+                className="p-2 border border-gray-200 rounded w-1/2.5"
+                placeholder="Min Revenue"
+              />
               {/* Maximum Revenue Filter */}
-              <select
+              <input
+                type="number"
                 name="maxRevenue"
-                value={filters.maxRevenue}
                 onChange={handleFilterChange} // Updates the maxRevenue filter
-                className="p-2 border border-gray-300 rounded"
-              >
-                <option value="">Max Revenue</option>
-                {filterOptions.revenues.map(revenue => (
-                  <option key={revenue} value={revenue}>{revenue}</option>
-                ))}
-              </select>
-
-              {/* Minimum Net Income Filter */}
-              <select
+                className="p-2 border border-gray-200 rounded w-1/2.5"
+                placeholder="Max Revenue"
+              />
+            </div>
+            <input
+              type="range"
+              name="revenue"
+              min={Math.min(...filterOptions.revenues)}
+              max={Math.max(...filterOptions.revenues)}
+              value={filters.maxRevenue}
+              onChange={(e) => {
+                const value = e.target.value;
+                setFilters({
+                  ...filters,
+                  maxRevenue: value
+                });
+              }}
+              className="w-full mt-2"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="minNetIncome"
+              className="block text-l font-medium text-gray-700 mb-1"
+            >
+              Net Income
+            </label>
+            <div className="flex justify-between">
+              <input
+                type="number"
                 name="minNetIncome"
-                value={filters.minNetIncome}
                 onChange={handleFilterChange} // Updates the minNetIncome filter
-                className="p-2 border border-gray-300 rounded"
-              >
-                <option value="">Min Net Income</option>
-                {filterOptions.netIncomes.map(netIncome => (
-                  <option key={netIncome} value={netIncome}>{netIncome}</option>
-                ))}
-              </select>
-
+                className="p-2 border border-gray-200 rounded w-1/2.5"
+                placeholder="Min Net Income"
+              />
               {/* Maximum Net Income Filter */}
-              <select
+              <input
+                type="number"
                 name="maxNetIncome"
-                value={filters.maxNetIncome}
                 onChange={handleFilterChange} // Updates the maxNetIncome filter
-                className="p-2 border border-gray-300 rounded"
-              >
-                <option value="">Max Net Income</option>
-                {filterOptions.netIncomes.map(netIncome => (
-                  <option key={netIncome} value={netIncome}>{netIncome}</option>
-                ))}
-              </select>
+                className="p-2 border border-gray-200 rounded w-1/2.5"
+                placeholder="Max Net Income"
+              />
             </div>
-
-            {/* Modal Actions */}
-            <div className="flex justify-end">
-              <button
-                onClick={() => setIsModalOpen(false)} // Closes the modal
-                className="p-2 bg-gray-500 text-white rounded hover:bg-gray-600 mr-2"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={applyFilters} // Applies selected filters
-                className="p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-              >
-                Apply Filters
-              </button>
-            </div>
+            <input
+              type="range"
+              name="netIncome"
+              min={Math.min(...filterOptions.netIncomes)}
+              max={Math.max(...filterOptions.netIncomes)}
+              value={filters.maxNetIncome}
+              onChange={(e) => {
+                const value = e.target.value;
+                setFilters({
+                  ...filters,
+                  maxNetIncome: value
+                });
+              }}
+              className="w-full mt-2"
+            />
           </div>
         </div>
-      )}
-
+      </div>
       {/* Data Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
-              {/* Table Headers with Sorting */}
-              <th scope="col" className="px-6 py-3 cursor-pointer" onClick={() => handleSort('date')}>
-                Date {getSortArrow('date')} {/* Sorting indicator */}
-              </th>
-              <th scope="col" className="px-6 py-3 cursor-pointer" onClick={() => handleSort('revenue')}>
-                Revenue {getSortArrow('revenue')}
-              </th>
-              <th scope="col" className="px-6 py-3 cursor-pointer" onClick={() => handleSort('netIncome')}>
-                Net Income {getSortArrow('netIncome')}
-              </th>
-              <th scope="col" className="px-6 py-3">Gross Profit</th>
-              <th scope="col" className="px-6 py-3">EPS (Earnings Per Share)</th>
-              <th scope="col" className="px-6 py-3">Operating Income</th>
-            </tr>
-          </thead>
-          <tbody>
-            {/* Render Filtered Data Rows */}
-            {filteredData.map((item) => (
-              <tr key={item.date} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                <td className="px-6 py-4">{item.date}</td>
-                <td className="px-6 py-4">{item.revenue}</td>
-                <td className="px-6 py-4">{item.netIncome}</td>
-                <td className="px-6 py-4">{item.grossProfit}</td>
-                <td className="px-6 py-4">{item.eps}</td>
-                <td className="px-6 py-4">{item.operatingIncome}</td>
+      <div className="w-3/4 p-4">
+        <h1 className="text-2xl font-bold mb-4 text-center">Financial Data Filtering App</h1>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+              <tr>
+                <th scope="col" className="px-6 py-3 cursor-pointer" onClick={() => handleSort('date')}>
+                  Date {getSortArrow('date')}
+                </th>
+                <th scope="col" className="px-6 py-3 cursor-pointer" onClick={() => handleSort('revenue')}>
+                  Revenue {getSortArrow('revenue')}
+                </th>
+                <th scope="col" className="px-6 py-3 cursor-pointer" onClick={() => handleSort('netIncome')}>
+                  Net Income {getSortArrow('netIncome')}
+                </th>
+                <th scope="col" className="px-6 py-3">Gross Profit</th>
+                <th scope="col" className="px-6 py-3">EPS (Earnings Per Share)</th>
+                <th scope="col" className="px-6 py-3">Operating Income</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {/* Render Filtered Data Rows */}
+              {sortedData.map((item) => (
+                <tr key={item.date} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                  <td className="px-6 py-4">{item.date}</td>
+                  <td className="px-6 py-4">{item.revenue}</td>
+                  <td className="px-6 py-4">{item.netIncome}</td>
+                  <td className="px-6 py-4">{item.grossProfit}</td>
+                  <td className="px-6 py-4">{item.eps}</td>
+                  <td className="px-6 py-4">{item.operatingIncome}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
